@@ -15,6 +15,7 @@ RUN wget https://github.com/Yelp/elastalert/archive/v${ELASTALERT_VERSION}.zip -
     mv /opt/elastalert-${ELASTALERT_VERSION} /opt/elastalert && \
     cd /opt/elastalert && \
     pip install elasticsearch==6.3.1 && \
+    pip install urllib3==1.24.3 && \
     python setup.py install && \
     pip install -e . && \
     apk del gcc libffi-dev musl-dev openssl-dev python2-dev
