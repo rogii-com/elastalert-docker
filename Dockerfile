@@ -1,4 +1,4 @@
-FROM alpine
+FROM python:3.6-alpine
 
 LABEL description="ElastAlert suitable for Kubernetes and Helm"
 LABEL maintainer="Jason Ertel (jertel at codesim.com)"
@@ -6,7 +6,8 @@ LABEL maintainer="Jason Ertel (jertel at codesim.com)"
 ARG ELASTALERT_VERSION=0.2.1
 
 RUN apk --update upgrade && \
-    apk add ca-certificates gcc libffi-dev musl-dev python2 python2-dev py2-pip py2-yaml openssl openssl-dev tzdata file-dev && \
+    # apk add ca-certificates gcc libffi-dev musl-dev python3==3.6.8-r0 python3-dev==3.6.8-r0 openssl openssl-dev tzdata file-dev && \
+    apk add ca-certificates gcc libffi-dev musl-dev openssl openssl-dev tzdata file-dev && \
     rm -rf /var/cache/apk/*
 
 RUN wget https://github.com/Yelp/elastalert/archive/v${ELASTALERT_VERSION}.zip -O /tmp/elastalert.zip && \
@@ -14,11 +15,13 @@ RUN wget https://github.com/Yelp/elastalert/archive/v${ELASTALERT_VERSION}.zip -
     rm -f /tmp/elastalert.zip && \
     mv /opt/elastalert-${ELASTALERT_VERSION} /opt/elastalert && \
     cd /opt/elastalert && \
-    pip install elasticsearch==7.0.1 && \
-    pip install urllib3==1.24.3 && \
-    python setup.py install && \
-    pip install -e . && \
-    apk del gcc libffi-dev musl-dev openssl-dev python2-dev
+    # sed -i '/jira/d' requirements.txt && \
+    pip3 install elasticsearch && \
+    pip3 install urllib3 && \
+    # pip3 install jira==2.0.0 && \
+    python3 setup.py install && \
+    pip3 install -e . && \
+    apk del gcc libffi-dev musl-dev openssl-dev
 
 RUN mkdir -p /opt/elastalert/config && \
     mkdir -p /opt/elastalert/rules && \
